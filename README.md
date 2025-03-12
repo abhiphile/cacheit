@@ -74,15 +74,11 @@ python benchmark/bench_box_plot.py
 #### **Generated Benchmark Results**
 Below are the benchmark images generated:
 - **Fast Benchmark:**
-  ![Fast Benchmark](benchmark_fast_results.png)
+  ![Fast Benchmark](benchmark_fast.png)
 - **Slow Benchmark:**
-  ![Slow Benchmark](benchmark_slow_results.png)
-- **Extensive Benchmark Results:**
-  ![Extensive Benchmark](extensive_benchmark_results.png)
+  ![Slow Benchmark](benchmark_slow.png)
 - **Response Time Box Plot:**
   ![Box Plot](response_time_boxplot.png)
-- **Response Time Pie Chart:**
-  ![Pie Chart](response_time_piechart.png)
 
 ---
 
