@@ -80,7 +80,6 @@ def benchmark():
     plt.title("Response Time Distribution")
     plt.grid()
     plt.savefig("response_time_boxplot.png")  # Save the box plot as an image
-    plt.show()
 
 
 if __name__ == "__main__":

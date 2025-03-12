@@ -63,7 +63,6 @@ def benchmark():
     plt.legend()
     plt.grid()
     plt.savefig("benchmark_fast.png")  # Save the plot as an image
-    plt.show()
 
 if __name__ == "__main__":
     benchmark()

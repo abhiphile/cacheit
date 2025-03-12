@@ -71,6 +71,26 @@ python benchmark/benchmark_slow.py
 python benchmark/bench_box_plot.py
 ```
 
+#### **Benchmark Results**
+## For Fast Benchmark
+```
+Total Requests: 1000
+Successful Requests: 1000
+Total Time: 0.028688 sec
+Average Time per Request: 0.000029 sec
+```
+
+## For Slow Benchmark
+```
+Total Requests: 5000
+Successful Requests: 5000
+Total Time: 1.049078 sec
+Average Time per Request: 0.000210 sec
+Median Time per Request: 0.000118 sec
+Max Time per Request: 0.010576 sec
+Min Time per Request: 0.000015 sec
+```
+
 #### **Generated Benchmark Results**
 Below are the benchmark images generated:
 - **Fast Benchmark:**
