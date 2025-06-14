@@ -1,141 +1,151 @@
-# Project Overview
-This project consists of a high-performance server and client implementation in C++, along with extensive benchmarking using Python. The benchmarks generate various performance graphs, including box plots and pie charts.
+# README.md
 
----
+# CacheIt
+
+CacheIt is a simple Redis-like in-memory data store implemented in C++. It supports basic operations such as setting, getting, and deleting key-value pairs, along with a few additional data structures like linked lists and hash maps.
+
+## Features
+
+- TCP server for handling client connections
+- Command parsing and execution
+- Support for multiple data structures:
+  - Linked List
+  - Hash Map
+- Non-blocking I/O using epoll
+- Logging functionality with different log levels
 
 ## Project Structure
+
 ```
-├── benchmark
-│   ├── bench_box_plot.py      # Script to generate box plot from benchmark data
-│   ├── benchmark_fast.py      # Fast execution benchmark
-│   └── benchmark_slow.py      # Slow execution benchmark
-├── benchmark_fast_results.png # Image of fast benchmark results
-├── benchmark_slow_results.png # Image of slow benchmark results
-├── docker-compose.yml         # Docker Compose configuration
-├── Dockerfile                 # Dockerfile to containerize the project
-├── extensive_benchmark_results.png # Image of extensive benchmark results
-├── Makefile                   # Makefile for building the project
-├── README.md                  # This README file
-├── requirements.txt            # Python dependencies
-├── response_time_boxplot.png   # Image of response time distribution (Box plot)
-├── response_time_piechart.png  # Image of response time distribution (Pie chart)
+cacheit
+├── include
+│   ├── command.hpp
+│   ├── conn.hpp
+│   ├── datastructures
+│   │   ├── linked_list.hpp
+│   │   └── hashmap.hpp
+│   ├── epoll_manager.hpp
+│   ├── logger.hpp
+│   ├── server.hpp
+│   └── utils.hpp
 ├── src
-│   ├── client.cc               # Client implementation
-│   ├── command.cc, command.h   # Command processing logic
-│   ├── conn.h                  # Connection handling
-│   ├── epoll_manager.cc, epoll_manager.h # Epoll-based event management
-│   ├── server.cc, server.h     # Server implementation
-│   └── utils.h                 # Utility functions
-└── test
-    └── test.py                 # Python test script for validation
+│   ├── client.cpp
+│   ├── command.cpp
+│   ├── conn.cpp
+│   ├── datastructures
+│   │   ├── linked_list.cpp
+│   │   └── hashmap.cpp
+│   ├── epoll_manager.cpp
+│   ├── logger.cpp
+│   ├── server.cpp
+│   └── utils.cpp
+├── CMakeLists.txt
+└── README.md
 ```
 
----
+## Setup Instructions
 
-## Running the Project
+1. Clone the repository:
+   ```
+   git clone <repository-url>
+   cd cacheit
+   ```
 
-### 1️⃣ Running with Docker
-#### **Build the Docker Image**
-```sh
-docker build -t my_server .
+2. Create a build directory and navigate into it:
+   ```
+   mkdir build
+   cd build
+   ```
+
+3. Run CMake to configure the project:
+   ```
+   cmake ..
+   ```
+
+4. Build the project:
+   ```
+   make
+   ```
+
+## Usage
+
+To run the server, execute the following command:
+```
+./cacheit/src/server
 ```
 
-#### **Run the Server**
-```sh
-docker run -p 6969:6969 --name server_container my_server
+To connect to the server and send commands, you can use the client:
+```
+./cacheit/src/client
 ```
 
-#### **Run the Client**
-```sh
-docker run --network host my_server ./client
+## Supported Commands
+
+### String (Key-Value)
+- `set <key> <value>`: Set a value for a key
+- `get <key>`: Get the value for a key
+- `del <key>`: Delete a key
+
+### Linked List (Redis-style)
+- `lpush <list> <value>`: Push value to the end of a list
+- `lrange <list> <start> <end>`: Get values from a list (use `0 -1` for all)
+- `lrem <list> <count> <value>`: Remove value from a list (count times)
+
+### Set
+- `sadd <set> <value1> [value2 ...]`: Add one or more values to a set
+- `srem <set> <value1> [value2 ...]`: Remove one or more values from a set
+- `smembers <set>`: List all values in a set
+
+### Hash
+- `hset <hash> <field> <value>`: Set a field in a hash
+- `hget <hash> <field>`: Get a field from a hash
+- `hdel <hash> <field>`: Delete a field from a hash
+- `hgetall <hash>`: Get all fields and values from a hash
+
+### Sorted Set
+- `zadd <zset> <score> <value>`: Add a value with a score to a sorted set
+- `zrange <zset> <start> <end>`: Get values by rank (use `0 -1` for all)
+- `zrem <zset> <value>`: Remove a value from a sorted set
+
+### Bitmap
+- `setbit <bitmap> <offset> <0|1>`: Set a bit at offset
+- `getbit <bitmap> <offset>`: Get a bit at offset
+- `bitcount <bitmap>`: Count bits set to 1
+
+## Example Session
+```
+> set hello world
+REPLY: set OK
+> get hello
+REPLY: world
+> lpush mylist 42
+REPLY: pushed 42 to mylist
+> lrange mylist 0 -1
+REPLY: 42
+> sadd myset a b c
+REPLY: added 3
+> smembers myset
+REPLY: a b c
+> hset myhash field1 value1
+REPLY: OK
+> hget myhash field1
+REPLY: value1
+> zadd myzset 1.0 foo
+REPLY: OK
+> zrange myzset 0 -1
+REPLY: foo
+> setbit mybits 5 1
+REPLY: OK
+> getbit mybits 5
+REPLY: 1
+> bitcount mybits
+REPLY: 1
 ```
 
----
+## Contributing
 
-### 2️⃣ Running Benchmarks
-#### **Setup a Python Virtual Environment**
-```sh
-python -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-```
+Contributions are welcome! Please feel free to submit a pull request or open an issue for any suggestions or improvements.
 
-#### **Install Dependencies**
-```sh
-pip install -r requirements.txt
-```
+## License
 
-#### **Run Benchmark Scripts**
-```sh
-python benchmark/benchmark_fast.py
-python benchmark/benchmark_slow.py
-python benchmark/bench_box_plot.py
-```
-
-#### **Benchmark Results**
-## For Fast Benchmark
-```
-Total Requests: 1000
-Successful Requests: 1000
-Total Time: 0.028688 sec
-Average Time per Request: 0.000029 sec
-```
-
-## For Slow Benchmark
-```
-Total Requests: 5000
-Successful Requests: 5000
-Total Time: 1.049078 sec
-Average Time per Request: 0.000210 sec
-Median Time per Request: 0.000118 sec
-Max Time per Request: 0.010576 sec
-Min Time per Request: 0.000015 sec
-```
-
-#### **Generated Benchmark Results**
-Below are the benchmark images generated:
-- **Fast Benchmark:**
-  ![Fast Benchmark](benchmark_fast.png)
-- **Slow Benchmark:**
-  ![Slow Benchmark](benchmark_slow.png)
-- **Response Time Box Plot:**
-  ![Box Plot](response_time_boxplot.png)
-
----
-
-### 3️⃣ Running Tests
-#### **Run the Python Test Suite**
-```sh
-python test/test.py
-```
-
----
-
-### 4️⃣ Running Locally (Without Docker)
-#### **Build the Project**
-```sh
-make
-```
-
-#### **Run the Server**
-```sh
-./server
-```
-
-#### **Run the Client**
-```sh
-./client
-```
-
-#### **Clean the Build**
-```sh
-make clean
-```
-
----
-
-## Notes
-- Ensure that the server is running before executing the client or benchmark scripts.
-- The benchmarks will generate performance graphs to analyze the efficiency of the server.
-- Docker is recommended for an isolated and reproducible environment.
-
-🚀 Happy Coding!
+This project is licensed under the MIT License. See the LICENSE file for more details.

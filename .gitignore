@@ -1,5 +1,35 @@
-*.o
+# --- CMake build ---
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# --- Executables ---
 server
 client
+
+# --- Object and dependency files ---
+*.o
+*.obj
+*.d
+
+# --- VS Code settings ---
+.vscode/
+
+# --- OS-specific ---
+.DS_Store
+Thumbs.db
+
+# --- Editor temp files ---
+*.swp
+*.swo
+*.bak
+*.tmp
+*~
+
+# --- Logs ---
+*.log
+
+# --- Python Files ---
 myenv/
-build/

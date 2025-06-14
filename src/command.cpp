@@ -1,10 +1,10 @@
-#include "command.h"
+#include "command.hpp"
 
-Command::Command()
+Command::Command() 
 : Command(0) {
 }
 
-Command::Command(size_t args_size)
+Command::Command(size_t args_size) 
 : args_size{args_size} {
 }
 
@@ -19,10 +19,10 @@ void Command::reset() {
   args.clear();
 }
 
-bool Command::isEmpty() {
+bool Command::isEmpty() const {
   return args_size == 0;
 }
 
-bool Command::isComplete() {
+bool Command::isComplete() const {
   return !isEmpty() && args.size() == args_size;
 }
