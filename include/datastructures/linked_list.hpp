@@ -29,6 +29,16 @@ public:
         size++;
     }
 
+    void push_front(int value) {
+        Node* newNode = new Node(value);
+        newNode->next = head;
+        head = newNode;
+        if (!tail) {
+            tail = newNode;
+        }
+        size++;
+    }
+
     void remove(int value) {
         Node* current = head;
         Node* previous = nullptr;

@@ -142,6 +142,27 @@ REPLY: 1
 REPLY: 1
 ```
 
+## Testing
+
+A Python-based test suite is provided in the `test/` directory. Each data structure and command is tested in its own file, and all tests can be run together with colored output.
+
+### Run all tests:
+```bash
+python3 test/run_all_tests.py
+```
+
+### Run individual tests:
+```bash
+python3 test/test_string.py
+python3 test/test_linkedlist.py
+python3 test/test_set.py
+python3 test/test_hash.py
+python3 test/test_zset.py
+python3 test/test_bitmap.py
+```
+
+Test output will be colorized for easy pass/fail visibility.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a pull request or open an issue for any suggestions or improvements.

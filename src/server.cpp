@@ -132,7 +132,7 @@ std::pair<std::string, int> RedisServer::execDel(Conn& c) {
   }
   const auto &key = args[1];
   kvstore.erase(key);
-  return {"del OK", 0};
+  return {"OK", 0};
 }
 
 // Add a map for named lists like Redis
@@ -145,8 +145,8 @@ std::pair<std::string, int> RedisServer::execLpush(Conn& c) {
   }
   const auto &listname = args[1];
   int value = std::stoi(args[2]);
-  liststore[listname].append(value);
-  return {"pushed " + args[2] + " to " + listname, 0};
+  liststore[listname].push_front(value);
+  return {"OK", 0};
 }
 
 std::pair<std::string, int> RedisServer::execLrange(Conn& c) {
@@ -191,9 +191,7 @@ std::pair<std::string, int> RedisServer::execLrem(Conn& c) {
     if (it->second.getSize() < before) ++removed;
     else break;
   }
-  std::ostringstream oss;
-  oss << "removed " << removed << " of " << value;
-  return {oss.str(), 0};
+  return {"OK", 0};
 }
 
 // SET COMMANDS
@@ -201,21 +199,19 @@ std::pair<std::string, int> RedisServer::execSadd(Conn& c) {
   const auto &args = c.cmd.getArgs();
   if (args.size() < 3) return {"Invalid command args", -1};
   const auto &setname = args[1];
-  int added = 0;
   for (size_t i = 2; i < args.size(); ++i) {
-    added += setstore[setname].insert(args[i]).second ? 1 : 0;
+    setstore[setname].insert(args[i]);
   }
-  return {"added " + std::to_string(added), 0};
+  return {"OK", 0};
 }
 std::pair<std::string, int> RedisServer::execSrem(Conn& c) {
   const auto &args = c.cmd.getArgs();
   if (args.size() < 3) return {"Invalid command args", -1};
   const auto &setname = args[1];
-  int removed = 0;
   for (size_t i = 2; i < args.size(); ++i) {
-    removed += setstore[setname].erase(args[i]);
+    setstore[setname].erase(args[i]);
   }
-  return {"removed " + std::to_string(removed), 0};
+  return {"OK", 0};
 }
 std::pair<std::string, int> RedisServer::execSmembers(Conn& c) {
   const auto &args = c.cmd.getArgs();
@@ -249,8 +245,8 @@ std::pair<std::string, int> RedisServer::execHdel(Conn& c) {
   if (args.size() != 3) return {"Invalid command args", -1};
   auto it = hashmapstore.find(args[1]);
   if (it == hashmapstore.end()) return {"not found", 1};
-  int removed = it->second.erase(args[2]);
-  return {"removed " + std::to_string(removed), 0};
+  it->second.erase(args[2]);
+  return {"OK", 0};
 }
 std::pair<std::string, int> RedisServer::execHgetall(Conn& c) {
   const auto &args = c.cmd.getArgs();
@@ -292,12 +288,11 @@ std::pair<std::string, int> RedisServer::execZrem(Conn& c) {
   if (args.size() != 3) return {"Invalid command args", -1};
   auto it = zsetstore.find(args[1]);
   if (it == zsetstore.end()) return {"not found", 1};
-  int removed = 0;
   for (auto iter = it->second.begin(); iter != it->second.end(); ) {
-    if (iter->second == args[2]) { iter = it->second.erase(iter); ++removed; }
+    if (iter->second == args[2]) { iter = it->second.erase(iter); }
     else ++iter;
   }
-  return {"removed " + std::to_string(removed), 0};
+  return {"OK", 0};
 }
 // BITMAP COMMANDS
 std::pair<std::string, int> RedisServer::execSetbit(Conn& c) {
